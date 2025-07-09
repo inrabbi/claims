@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Claims Tracking Portal - Reports</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .nav-link {
+            color: var(--secondary-color);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .report-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+        
+        .stat-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .stat-card .stat-label {
+            color: var(--secondary-color);
+        }
+        
+        .stat-card .stat-change {
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .stat-card .stat-change.positive {
+            color: var(--success-color);
+        }
+        
+        .stat-card .stat-change.negative {
+            color: var(--danger-color);
+        }
+        
+        .filter-bar {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .claims-table {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-submitted {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #d39e00;
+        }
+        
+        .status-review {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: var(--primary-color);
+        }
+        
+        .status-negotiation {
+            background-color: rgba(253, 126, 20, 0.2);
+            color: #fd7e14;
+        }
+        
+        .status-settled {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: var(--success-color);
+        }
+        
+        .export-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar p-3" style="width: 250px;">
+            <div class="d-flex align-items-center mb-4">
+                <img src="https://via.placeholder.com/40x40?text=MC" alt="Logo" class="me-2">
+                <span class="fs-5 fw-bold">Maritime Claims</span>
+            </div>
+            
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-earmark-text"></i> My Claims
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-plus-circle"></i> File New Claim
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-chat-left-text"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-graph-up"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-person"></i> Account
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Reports & Analytics</h2>
+                <button class="btn btn-primary">
+                    <i class="bi bi-download me-2"></i>Export Full Report
+                </button>
+            </div>
+            
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="timePeriod" class="form-label">Time Period</label>
+                        <select class="form-select" id="timePeriod">
+                            <option selected>Last 30 Days</option>
+                            <option>Last Quarter</option>
+                            <option>Last 6 Months</option>
+                            <option>Last Year</option>
+                            <option>Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="claimType" class="form-label">Claim Type</label>
+                        <select class="form-select" id="claimType">
+                            <option selected>All Types</option>
+                            <option>Cargo Damage</option>
+                            <option>Cargo Shortage</option>
+                            <option>Delay</option>
+                            <option>Container Damage</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option selected>All Statuses</option>
+                            <option>Submitted</option>
+                            <option>Under Review</option>
+                            <option>Negotiation</option>
+                            <option>Settled</option>
+                            <option>Denied</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3 d-flex align-items-end">
+                        <button class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-2"></i>Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Key Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card">
+                        <i class="bi bi-file-earmark-text text-primary" style="font-size: 1.5rem;"></i>
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Total Claims</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> 12% from last period
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card">
+                        <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Claims Settled</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> 8% from last period
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card">
+                        <i class="bi bi-currency-dollar text-warning" style="font-size: 1.5rem;"></i>
+                        <div class="stat-value">$142K</div>
+                        <div class="stat-label">Total Recovered</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i> 15% from last period
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card">
+                        <i class="bi bi-clock-history text-info" style="font-size: 1.5rem;"></i>
+                        <div class="stat-value">18d</div>
+                        <div class="stat-label">Avg. Settlement Time</div>
+                        <div class="stat-change negative">
+                            <i class="bi bi-arrow-down"></i> 2 days longer
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Row 1 -->
+            <div class="row mb-4">
+                <div class="col-md-8 mb-3">
+                    <div class="report-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5>Claims Over Time</h5>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-secondary active">By Count</button>
+                                <button class="btn btn-sm btn-outline-secondary">By Amount</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <button class="btn btn-sm btn-outline-secondary export-btn">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <canvas id="claimsOverTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="report-card">
+                        <h5 class="mb-3">Claims by Type</h5>
+                        <div class="chart-container">
+                            <button class="btn btn-sm btn-outline-secondary export-btn">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <canvas id="claimsByTypeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Row 2 -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="report-card">
+                        <h5 class="mb-3">Settlement Rate</h5>
+                        <div class="chart-container">
+                            <button class="btn btn-sm btn-outline-secondary export-btn">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <canvas id="settlementRateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="report-card">
+                        <h5 class="mb-3">Top Shipping Lines by Claims</h5>
+                        <div class="chart-container">
+                            <button class="btn btn-sm btn-outline-secondary export-btn">
+                                <i class="bi bi-download"></i>
+                            </button>
+                            <canvas id="shippingLinesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Claims Table -->
+            <div class="report-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Recent Claims</h5>
+                    <button class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-download me-2"></i>Export
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Claim ID</th>
+                                <th>Date Filed</th>
+                                <th>Voyage #</th>
+                                <th>Incident Type</th>
+                                <th>Amount Claimed</th>
+                                <th>Settled Amount</th>
+                                <th>Status</th>
+                                <th>Days to Settle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MC-2023-0487</td>
+                                <td>2023-05-22</td>
+                                <td>V-1876</td>
+                                <td>Cargo Shortage</td>
+                                <td>$8,200</td>
+                                <td>$7,500</td>
+                                <td><span class="status-badge status-settled">Settled</span></td>
+                                <td>22</td>
+                            </tr>
+                            <tr>
+                                <td>MC-2023-0491</td>
+                                <td>2023-06-05</td>
+                                <td>V-2987</td>
+                                <td>Delay</td>
+                                <td>$5,750</td>
+                                <td>-</td>
+                                <td><span class="status-badge status-review">Under Review</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>MC-2023-0452</td>
+                                <td>2023-05-10</td>
+                                <td>V-2345</td>
+                                <td>Cargo Damage</td>
+                                <td>$12,500</td>
+                                <td>$10,000</td>
+                                <td><span class="status-badge status-settled">Settled</span></td>
+                                <td>18</td>
+                            </tr>
+                            <tr>
+                                <td>MC-2023-0495</td>
+                                <td>2023-06-18</td>
+                                <td>V-3124</td>
+                                <td>Cargo Damage</td>
+                                <td>$15,000</td>
+                                <td>-</td>
+                                <td><span class="status-badge status-submitted">Submitted</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>MC-2023-0421</td>
+                                <td>2023-04-15</td>
+                                <td>V-1567</td>
+                                <td>Cargo Damage</td>
+                                <td>$7,800</td>
+                                <td>$0</td>
+                                <td><span class="status-badge status-denied">Denied</span></td>
+                                <td>45</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <nav aria-label="Claims pagination" class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript for Charts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Claims Over Time Chart
+            const claimsOverTimeCtx = document.getElementById('claimsOverTimeChart').getContext('2d');
+            const claimsOverTimeChart = new Chart(claimsOverTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [
+                        {
+                            label: 'Claims Filed',
+                            data: [5, 8, 6, 9, 12, 8, 4],
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Claims Settled',
+                            data: [3, 5, 4, 7, 10, 6, 3],
+                            borderColor: '#198754',
+                            backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Claims By Type Chart
+            const claimsByTypeCtx = document.getElementById('claimsByTypeChart').getContext('2d');
+            const claimsByTypeChart = new Chart(claimsByTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cargo Damage', 'Cargo Shortage', 'Delay', 'Container Damage', 'Other'],
+                    datasets: [{
+                        data: [45, 25, 15, 10, 5],
+                        backgroundColor: [
+                            '#0d6efd',
+                            '#fd7e14',
+                            '#6c757d',
+                            '#ffc107',
+                            '#6610f2'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+            
+            // Settlement Rate Chart
+            const settlementRateCtx = document.getElementById('settlementRateChart').getContext('2d');
+            const settlementRateChart = new Chart(settlementRateCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1 2022', 'Q2 2022', 'Q3 2022', 'Q4 2022', 'Q1 2023', 'Q2 2023'],
+                    datasets: [{
+                        label: 'Settlement Rate %',
+                        data: [72, 75, 78, 80, 82, 85],
+                        backgroundColor: 'rgba(25, 135, 84, 0.7)',
+                        borderColor: '#198754',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Shipping Lines Chart
+            const shippingLinesCtx = document.getElementById('shippingLinesChart').getContext('2d');
+            const shippingLinesChart = new Chart(shippingLinesCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Maersk Line', 'Mediterranean Shipping', 'CMA CGM', 'COSCO Shipping', 'Hapag-Lloyd'],
+                    datasets: [{
+                        label: 'Number of Claims',
+                        data: [15, 12, 8, 6, 5],
+                        backgroundColor: [
+                            'rgba(13, 110, 253, 0.7)',
+                            'rgba(253, 126, 20, 0.7)',
+                            'rgba(111, 66, 193, 0.7)',
+                            'rgba(220, 53, 69, 0.7)',
+                            'rgba(32, 201, 151, 0.7)'
+                        ],
+                        borderColor: [
+                            '#0d6efd',
+                            '#fd7e14',
+                            '#6f42c1',
+                            '#dc3545',
+                            '#20c997'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Handle export buttons
+            document.querySelectorAll('.export-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // In a real app, this would export the chart data
+                    alert('Export functionality would be implemented here');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Claims Tracking Portal - My Claims</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .nav-link {
+            color: var(--secondary-color);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .claims-table {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-submitted {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #d39e00;
+        }
+        
+        .status-review {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: var(--primary-color);
+        }
+        
+        .status-negotiation {
+            background-color: rgba(253, 126, 20, 0.2);
+            color: #fd7e14;
+        }
+        
+        .status-settled {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-denied {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .claim-detail-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 20px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 10px;
+            width: 2px;
+            background-color: #e9ecef;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -30px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 4px solid white;
+        }
+        
+        .timeline-item.settled::before {
+            background-color: var(--success-color);
+        }
+        
+        .timeline-item.review::before {
+            background-color: var(--info-color);
+        }
+        
+        .timeline-item.negotiation::before {
+            background-color: var(--warning-color);
+        }
+        
+        .document-thumbnail {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .document-thumbnail:hover {
+            transform: scale(1.05);
+        }
+        
+        .message-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .message-in {
+            background-color: #f1f1f1;
+            margin-right: auto;
+        }
+        
+        .message-out {
+            background-color: var(--primary-color);
+            color: white;
+            margin-left: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar p-3" style="width: 250px;">
+            <div class="d-flex align-items-center mb-4">
+                <img src="https://via.placeholder.com/40x40?text=MC" alt="Logo" class="me-2">
+                <span class="fs-5 fw-bold">Maritime Claims</span>
+            </div>
+            
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-file-earmark-text"></i> My Claims
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-plus-circle"></i> File New Claim
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-chat-left-text"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-graph-up"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-person"></i> Account
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Claims List View (default) -->
+            <div id="claimsListView">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>My Claims</h2>
+                    <div class="d-flex">
+                        <div class="input-group me-3" style="width: 250px;">
+                            <input type="text" class="form-control" placeholder="Search claims...">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>New Claim
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">All Claims</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Submitted</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Under Review</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Negotiation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Settled</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="claims-table p-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Claim ID</th>
+                                    <th>Date Filed</th>
+                                    <th>Voyage #</th>
+                                    <th>Incident Type</th>
+                                    <th>Amount Claimed</th>
+                                    <th>Status</th>
+                                    <th>Last Update</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="clickable-row" data-claim-id="MC-2023-0452">
+                                    <td>MC-2023-0452</td>
+                                    <td>2023-05-10</td>
+                                    <td>V-2345</td>
+                                    <td>Cargo Damage</td>
+                                    <td>$12,500</td>
+                                    <td><span class="status-badge status-settled">Settled</span></td>
+                                    <td>2023-06-15</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="clickable-row" data-claim-id="MC-2023-0487">
+                                    <td>MC-2023-0487</td>
+                                    <td>2023-05-22</td>
+                                    <td>V-1876</td>
+                                    <td>Cargo Shortage</td>
+                                    <td>$8,200</td>
+                                    <td><span class="status-badge status-negotiation">Negotiation</span></td>
+                                    <td>2023-06-28</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="clickable-row" data-claim-id="MC-2023-0491">
+                                    <td>MC-2023-0491</td>
+                                    <td>2023-06-05</td>
+                                    <td>V-2987</td>
+                                    <td>Delay</td>
+                                    <td>$5,750</td>
+                                    <td><span class="status-badge status-review">Under Review</span></td>
+                                    <td>2023-06-20</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="clickable-row" data-claim-id="MC-2023-0495">
+                                    <td>MC-2023-0495</td>
+                                    <td>2023-06-18</td>
+                                    <td>V-3124</td>
+                                    <td>Cargo Damage</td>
+                                    <td>$15,000</td>
+                                    <td><span class="status-badge status-submitted">Submitted</span></td>
+                                    <td>2023-06-18</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="clickable-row" data-claim-id="MC-2023-0421">
+                                    <td>MC-2023-0421</td>
+                                    <td>2023-04-15</td>
+                                    <td>V-1567</td>
+                                    <td>Cargo Damage</td>
+                                    <td>$7,800</td>
+                                    <td><span class="status-badge status-denied">Denied</span></td>
+                                    <td>2023-05-30</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <nav aria-label="Claims pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Claim Detail View (hidden by default) -->
+            <div id="claimDetailView" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <button class="btn btn-outline-secondary me-3" id="backToClaims">
+                            <i class="bi bi-arrow-left me-2"></i>Back to All Claims
+                        </button>
+                        <h2 class="d-inline-block mb-0">Claim #<span id="detailClaimId">MC-2023-0452</span></h2>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-danger me-2">
+                            <i class="bi bi-trash me-2"></i>Delete
+                        </button>
+                        <button class="btn btn-outline-primary">
+                            <i class="bi bi-printer me-2"></i>Print
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Claim Summary -->
+                    <div class="col-lg-8">
+                        <div class="card claim-detail-card">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Claim Summary</h5>
+                                <span class="status-badge status-settled">Settled</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <th width="40%">Claim ID:</th>
+                                                <td>MC-2023-0452</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Date Filed:</th>
+                                                <td>2023-05-10</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Voyage Number:</th>
+                                                <td>V-2345</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Shipping Line:</th>
+                                                <td>Maersk Line</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Port of Loading:</th>
+                                                <td>Rotterdam, Netherlands</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Port of Discharge:</th>
+                                                <td>Shanghai, China</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <th width="40%">Incident Type:</th>
+                                                <td>Cargo Damage</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Incident Date:</th>
+                                                <td>2023-05-05</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Cargo Type:</th>
+                                                <td>Container (FCL)</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Commodity:</th>
+                                                <td>Electronics</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Amount Claimed:</th>
+                                                <td>$12,500</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Settlement Amount:</th>
+                                                <td class="text-success">$10,000</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <h6>Description of Loss</h6>
+                                    <div class="p-3 bg-light rounded">
+                                        Upon opening the container at destination, we discovered that approximately 20% of the electronic components were damaged due to water exposure. The goods were properly packaged and the container appeared intact upon loading.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Claim Timeline -->
+                        <div class="card claim-detail-card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Claim Timeline</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="timeline">
+                                    <div class="timeline-item settled">
+                                        <h6>Claim Settled</h6>
+                                        <p class="text-muted mb-1">Claim settled with payment of $10,000</p>
+                                        <small class="text-muted">June 15, 2023 - 10:45 AM</small>
+                                    </div>
+                                    
+                                    <div class="timeline-item negotiation">
+                                        <h6>Negotiation Completed</h6>
+                                        <p class="text-muted mb-1">Agreed on settlement amount with insurer</p>
+                                        <small class="text-muted">June 12, 2023 - 3:30 PM</small>
+                                    </div>
+                                    
+                                    <div class="timeline-item negotiation">
+                                        <h6>Counteroffer Received</h6>
+                                        <p class="text-muted mb-1">Insurer offered $8,500 (original claim $12,500)</p>
+                                        <small class="text-muted">June 5, 2023 - 11:20 AM</small>
+                                    </div>
+                                    
+                                    <div class="timeline-item review">
+                                        <h6>Survey Report Received</h6>
+                                        <p class="text-muted mb-1">Independent survey confirms water damage</p>
+                                        <small class="text-muted">May 28, 2023 - 2:15 PM</small>
+                                    </div>
+                                    
+                                    <div class="timeline-item">
+                                        <h6>Claim Submitted</h6>
+                                        <p class="text-muted mb-1">Initial claim filed with all documents</p>
+                                        <small class="text-muted">May 10, 2023 - 9:30 AM</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Documents and Messages -->
+                    <div class="col-lg-4">
+                        <!-- Documents -->
+                        <div class="card claim-detail-card">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Documents</h5>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-plus"></i> Add
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap">
+                                    <img src="https://via.placeholder.com/200x300?text=BOL" alt="Bill of Lading" class="document-thumbnail" data-bs-toggle="modal" data-bs-target="#documentModal">
+                                    <img src="https://via.placeholder.com/200x300?text=INV" alt="Invoice" class="document-thumbnail" data-bs-toggle="modal" data-bs-target="#documentModal">
+                                    <img src="https://via.placeholder.com/200x150?text=Photo1" alt="Damage Photo 1" class="document-thumbnail" data-bs-toggle="modal" data-bs-target="#documentModal">
+                                    <img src="https://via.placeholder.com/200x150?text=Photo2" alt="Damage Photo 2" class="document-thumbnail" data-bs-toggle="modal" data-bs-target="#documentModal">
+                                    <img src="https://via.placeholder.com/200x300?text=SUR" alt="Survey Report" class="document-thumbnail" data-bs-toggle="modal" data-bs-target="#documentModal">
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <h6>Document List</h6>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Bill of Lading (BOL_2345.pdf)
+                                            <a href="#" class="text-primary"><i class="bi bi-download"></i></a>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Commercial Invoice (INV_9876.pdf)
+                                            <a href="#" class="text-primary"><i class="bi bi-download"></i></a>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Damage Photos (3 files)
+                                            <a href="#" class="text-primary"><i class="bi bi-download"></i></a>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Survey Report (SUR_4521.pdf)
+                                            <a href="#" class="text-primary"><i class="bi bi-download"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Messages -->
+                        <div class="card claim-detail-card">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Messages</h5>
+                            </div>
+                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                <div class="message-bubble message-in">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Claims Officer</strong>
+                                        <small class="text-muted">Jun 12, 3:45 PM</small>
+                                    </div>
+                                    <p class="mb-0">We've reached an agreement with the insurer for $10,000 settlement. Please confirm if this is acceptable.</p>
+                                </div>
+                                
+                                <div class="message-bubble message-out">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>You</strong>
+                                        <small>Jun 12, 4:20 PM</small>
+                                    </div>
+                                    <p class="mb-0">Yes, we accept the $10,000 settlement. Please proceed.</p>
+                                </div>
+                                
+                                <div class="message-bubble message-in">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Claims Officer</strong>
+                                        <small class="text-muted">Jun 5, 11:30 AM</small>
+                                    </div>
+                                    <p class="mb-0">The insurer has reviewed the claim and offered $8,500 settlement. We believe we can negotiate for more.</p>
+                                </div>
+                                
+                                <div class="message-bubble message-in">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Claims Officer</strong>
+                                        <small class="text-muted">May 28, 2:30 PM</small>
+                                    </div>
+                                    <p class="mb-0">The survey report confirms water damage to approximately 20% of the cargo. We'll proceed with the claim submission to insurer.</p>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Type your message...">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="bi bi-send"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Modal -->
+    <div class="modal fade" id="documentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="documentModalLabel">Document Viewer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="https://via.placeholder.com/800x1000?text=Document+Preview" alt="Document Preview" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">
+                        <i class="bi bi-download me-2"></i>Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle between list view and detail view
+            const clickableRows = document.querySelectorAll('.clickable-row');
+            const claimsListView = document.getElementById('claimsListView');
+            const claimDetailView = document.getElementById('claimDetailView');
+            const backToClaims = document.getElementById('backToClaims');
+            
+            clickableRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const claimId = this.getAttribute('data-claim-id');
+                    document.getElementById('detailClaimId').textContent = claimId;
+                    
+                    // In a real app, you would fetch claim details here
+                    // For demo, we just toggle the views
+                    claimsListView.style.display = 'none';
+                    claimDetailView.style.display = 'block';
+                });
+            });
+            
+            backToClaims.addEventListener('click', function() {
+                claimDetailView.style.display = 'none';
+                claimsListView.style.display = 'block';
+            });
+            
+            // Simulate clicking on first claim for demo purposes
+            // Remove this in production
+            document.querySelector('.clickable-row').click();
+        });
+    </script>
+</body>
+</html>

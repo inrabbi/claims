@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Claims Tracking Portal - Account</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .nav-link {
+            color: var(--secondary-color);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .account-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .plan-card {
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            border: 2px solid #dee2e6;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .plan-card.featured {
+            border-color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .plan-card .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .plan-card .plan-period {
+            color: var(--secondary-color);
+        }
+        
+        .plan-card .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .plan-card .plan-features li {
+            padding: 5px 0;
+        }
+        
+        .plan-card .plan-features li i {
+            margin-right: 10px;
+            color: var(--success-color);
+        }
+        
+        .billing-history {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .billing-history .table th {
+            background-color: #f8f9fa;
+            border-bottom-width: 1px;
+        }
+        
+        .payment-method {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff;
+        }
+        
+        .payment-method .card-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-right: 15px;
+        }
+        
+        .usage-meter {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .usage-meter .progress-bar {
+            background-color: var(--primary-color);
+        }
+        
+        .security-alert {
+            border-left: 4px solid var(--warning-color);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar p-3" style="width: 250px;">
+            <div class="d-flex align-items-center mb-4">
+                <img src="https://via.placeholder.com/40x40?text=MC" alt="Logo" class="me-2">
+                <span class="fs-5 fw-bold">Maritime Claims</span>
+            </div>
+            
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-earmark-text"></i> My Claims
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-plus-circle"></i> File New Claim
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-chat-left-text"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-graph-up"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-person"></i> Account
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Account Settings</h2>
+                <div class="badge bg-success">
+                    <i class="bi bi-star-fill me-1"></i> Premium Account
+                </div>
+            </div>
+            
+            <ul class="nav nav-tabs mb-4" id="accountTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Profile</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab">Billing</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">Security</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab">Notifications</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="accountTabsContent">
+                <!-- Profile Tab -->
+                <div class="tab-pane fade show active" id="profile" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="account-card">
+                                <h4 class="mb-4">Company Information</h4>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="companyName" class="form-label">Company Name</label>
+                                        <input type="text" class="form-control" id="companyName" value="Ocean Freight Logistics Ltd.">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="industry" class="form-label">Industry</label>
+                                        <select class="form-select" id="industry">
+                                            <option>Freight Forwarding</option>
+                                            <option>Shipping</option>
+                                            <option>Logistics</option>
+                                            <option>Manufacturing</option>
+                                            <option>Retail</option>
+                                            <option selected>Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="companyAddress" class="form-label">Address</label>
+                                        <textarea class="form-control" id="companyAddress" rows="3">123 Maritime Blvd, Rotterdam, Netherlands</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="taxId" class="form-label">Tax ID/VAT Number</label>
+                                        <input type="text" class="form-control" id="taxId" value="NL123456789B01">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="account-card">
+                                <h4 class="mb-4">Primary Contact</h4>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="contactName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="contactName" value="Jan van Dijk">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactEmail" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="contactEmail" value="jan.vandijk@oceanfreight.com">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactPhone" class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="contactPhone" value="+31 123 456 7890">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactPosition" class="form-label">Position</label>
+                                        <input type="text" class="form-control" id="contactPosition" value="Claims Manager">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Contact</button>
+                                </form>
+                            </div>
+                            
+                            <div class="account-card mt-4">
+                                <h4 class="mb-4">Account Usage</h4>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Claims this month</strong>
+                                        <span>8/20</span>
+                                    </div>
+                                    <div class="usage-meter">
+                                        <div class="progress-bar" style="width: 40%"></div>
+                                    </div>
+                                    <small class="text-muted">You've used 8 of your 20 included monthly claims</small>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>Storage</strong>
+                                        <span>245MB/1GB</span>
+                                    </div>
+                                    <div class="usage-meter">
+                                        <div class="progress-bar" style="width: 24.5%"></div>
+                                    </div>
+                                    <small class="text-muted">Documents and attachments storage</small>
+                                </div>
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>Upgrade to Enterprise plan for unlimited claims and 5GB storage.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Billing Tab -->
+                <div class="tab-pane fade" id="billing" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="account-card">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4>Subscription Plan</h4>
+                                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changePlanModal">
+                                        Change Plan
+                                    </button>
+                                </div>
+                                
+                                <div class="alert alert-success">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Premium Plan</strong> - $99/month
+                                            <div class="text-muted">Renews on August 15, 2023</div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-danger">Cancel Subscription</button>
+                                    </div>
+                                </div>
+                                
+                                <h5 class="mt-4 mb-3">Payment Methods</h5>
+                                <div class="payment-method">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-credit-card card-icon"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>Visa ending in 4242</strong>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                                </div>
+                                            </div>
+                                            <div class="text-muted">Expires 04/2025</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-outline-primary mt-2">
+                                    <i class="bi bi-plus me-2"></i>Add Payment Method
+                                </button>
+                                
+                                <h5 class="mt-4 mb-3">Billing History</h5>
+                                <div class="billing-history">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Description</th>
+                                                <th>Amount</th>
+                                                <th>Status</th>
+                                                <th>Invoice</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>2023-07-15</td>
+                                                <td>Premium Plan Subscription</td>
+                                                <td>$99.00</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                                <td><a href="#" class="text-primary">Download</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2023-06-15</td>
+                                                <td>Premium Plan Subscription</td>
+                                                <td>$99.00</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                                <td><a href="#" class="text-primary">Download</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2023-05-15</td>
+                                                <td>Premium Plan Subscription</td>
+                                                <td>$99.00</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                                <td><a href="#" class="text-primary">Download</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2023-04-15</td>
+                                                <td>Premium Plan Subscription + 5 extra claims</td>
+                                                <td>$124.00</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                                <td><a href="#" class="text-primary">Download</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2023-03-15</td>
+                                                <td>Premium Plan Subscription</td>
+                                                <td>$99.00</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                                <td><a href="#" class="text-primary">Download</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <nav aria-label="Billing pagination" class="mt-3">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="account-card">
+                                <h4 class="mb-4">Billing Information</h4>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="billingEmail" class="form-label">Billing Email</label>
+                                        <input type="email" class="form-control" id="billingEmail" value="accounting@oceanfreight.com">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="billingAddress" class="form-label">Billing Address</label>
+                                        <textarea class="form-control" id="billingAddress" rows="3">123 Maritime Blvd, Rotterdam, Netherlands</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="taxIdBilling" class="form-label">Tax ID/VAT Number</label>
+                                        <input type="text" class="form-control" id="taxIdBilling" value="NL123456789B01">
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="sameAsCompany" checked>
+                                        <label class="form-check-label" for="sameAsCompany">Same as company information</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Billing</button>
+                                </form>
+                            </div>
+                            
+                            <div class="account-card mt-4">
+                                <h4 class="mb-4">Payment Alerts</h4>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="invoiceAlerts" checked>
+                                    <label class="form-check-label" for="invoiceAlerts">Email me for each payment</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="receiptAlerts" checked>
+                                    <label class="form-check-label" for="receiptAlerts">Email me payment receipts</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="failedPaymentAlerts" checked>
+                                    <label class="form-check-label" for="failedPaymentAlerts">Notify me of failed payments</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="upcomingRenewalAlerts" checked>
+                                    <label class="form-check-label" for="upcomingRenewalAlerts">Remind me before renewal</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Tab -->
+                <div class="tab-pane fade" id="security" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="account-card">
+                                <h4 class="mb-4">Password & Authentication</h4>
+                                
+                                <div class="security-alert">
+                                    <h5><i class="bi bi-shield-exclamation text-warning me-2"></i>Security Recommendation</h5>
+                                    <p class="mb-2">Your password hasn't been changed in over 6 months. Consider updating it for better security.</p>
+                                    <button class="btn btn-sm btn-warning">Change Password</button>
+                                </div>
+                                
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="currentPassword" class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="currentPassword">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword">
+                                        <div class="form-text">Password must be at least 8 characters long</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update Password</button>
+                                </form>
+                                
+                                <hr class="my-4">
+                                
+                                <h5 class="mb-3">Two-Factor Authentication</h5>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <strong>SMS Authentication</strong>
+                                        <div class="text-muted">+31 ••• ••• 7890</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-secondary">Edit</button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Authenticator App</strong>
+                                        <div class="text-muted">Not configured</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary">Set Up</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="account-card">
+                                <h4 class="mb-4">Login Activity</h4>
+                                <p class="text-muted mb-3">Recent account access</p>
+                                
+                                <div class="list-group">
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>Rotterdam, Netherlands</strong>
+                                                <div class="text-muted">Chrome on Windows</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div>Just now</div>
+                                                <small class="text-muted">Successful</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>Amsterdam, Netherlands</strong>
+                                                <div class="text-muted">Safari on iPhone</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div>Yesterday, 3:45 PM</div>
+                                                <small class="text-muted">Successful</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>Hamburg, Germany</strong>
+                                                <div class="text-muted">Firefox on Windows</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div>July 10, 9:30 AM</div>
+                                                <small class="text-muted">Successful</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>London, UK</strong>
+                                                <div class="text-muted">Chrome on Mac</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div>July 5, 11:20 AM</div>
+                                                <small class="text-success">New device</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <strong>Brussels, Belgium</strong>
+                                                <div class="text-muted">Failed attempt</div>
+                                            </div>
+                                            <div class="text-end">
+                                                <div>June 28, 2:15 AM</div>
+                                                <small class="text-danger">Unrecognized</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-outline-secondary w-100 mt-3">
+                                    View All Activity
+                                </button>
+                            </div>
+                            
+                            <div class="account-card mt-4">
+                                <h4 class="mb-4">Connected Devices</h4>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <strong>Windows PC - Chrome</strong>
+                                        <div class="text-muted">Rotterdam, Netherlands • Active now</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger">Log Out</button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <strong>iPhone - Safari</strong>
+                                        <div class="text-muted">Last active: Yesterday, 3:45 PM</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger">Log Out</button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>MacBook - Chrome</strong>
+                                        <div class="text-muted">Last active: July 5, 11:20 AM</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger">Log Out</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications Tab -->
+                <div class="tab-pane fade" id="notifications" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="account-card">
+                                <h4 class="mb-4">Email Notifications</h4>
+                                
+                                <h5 class="mt-4 mb-3">Claims</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="claimStatusUpdates" checked>
+                                    <label class="form-check-label" for="claimStatusUpdates">Claim status updates</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="claimDocumentsRequest" checked>
+                                    <label class="form-check-label" for="claimDocumentsRequest">Document requests</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="claimSettlementOffers" checked>
+                                    <label class="form-check-label" for="claimSettlementOffers">Settlement offers</label>
+                                </div>
+                                
+                                <h5 class="mt-4 mb-3">Messages</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="newMessages" checked>
+                                    <label class="form-check-label" for="newMessages">New messages</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="messageReplies" checked>
+                                    <label class="form-check-label" for="messageReplies">Message replies</label>
+                                </div>
+                                
+                                <h5 class="mt-4 mb-3">System</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="systemMaintenance" checked>
+                                    <label class="form-check-label" for="systemMaintenance">System maintenance</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="newFeatures" checked>
+                                    <label class="form-check-label" for="newFeatures">New features</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="productUpdates" checked>
+                                    <label class="form-check-label" for="productUpdates">Product updates</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="account-card">
+                                <h4 class="mb-4">In-App Notifications</h4>
+                                
+                                <h5 class="mt-4 mb-3">Claims</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appClaimStatusUpdates" checked>
+                                    <label class="form-check-label" for="appClaimStatusUpdates">Claim status updates</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appClaimDocumentsRequest" checked>
+                                    <label class="form-check-label" for="appClaimDocumentsRequest">Document requests</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appClaimSettlementOffers" checked>
+                                    <label class="form-check-label" for="appClaimSettlementOffers">Settlement offers</label>
+                                </div>
+                                
+                                <h5 class="mt-4 mb-3">Messages</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appNewMessages" checked>
+                                    <label class="form-check-label" for="appNewMessages">New messages</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appMessageReplies" checked>
+                                    <label class="form-check-label" for="appMessageReplies">Message replies</label>
+                                </div>
+                                
+                                <h5 class="mt-4 mb-3">System</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appSystemMaintenance">
+                                    <label class="form-check-label" for="appSystemMaintenance">System maintenance</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="appNewFeatures" checked>
+                                    <label class="form-check-label" for="appNewFeatures">New features</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="appProductUpdates">
+                                    <label class="form-check-label" for="appProductUpdates">Product updates</label>
+                                </div>
+                            </div>
+                            
+                            <div class="account-card mt-4">
+                                <h4 class="mb-4">Notification Preferences</h4>
+                                <div class="mb-3">
+                                    <label class="form-label">Notification Frequency</label>
+                                    <select class="form-select">
+                                        <option selected>Real-time</option>
+                                        <option>Daily digest</option>
+                                        <option>Weekly summary</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Quiet Hours</label>
+                                    <select class="form-select">
+                                        <option selected>Disabled</option>
+                                        <option>10:00 PM - 6:00 AM</option>
+                                        <option>Custom...</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary">Save Preferences</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Plan Modal -->
+    <div class="modal fade" id="changePlanModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Subscription Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="plan-card">
+                                <h5>Basic</h5>
+                                <div class="plan-price">$29</div>
+                                <div class="plan-period">per month</div>
+                                <ul class="plan-features">
+                                    <li><i class="bi bi-check"></i> 5 claims/month</li>
+                                    <li><i class="bi bi-check"></i> Basic support</li>
+                                    <li><i class="bi bi-check"></i> 100MB storage</li>
+                                    <li><i class="bi bi-x text-danger"></i> No priority processing</li>
+                                    <li><i class="bi bi-x text-danger"></i> No advanced analytics</li>
+                                </ul>
+                                <button class="btn btn-outline-primary w-100">Select Basic</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="plan-card featured">
+                                <div class="badge bg-success mb-2">Current Plan</div>
+                                <h5>Premium</h5>
+                                <div class="plan-price">$99</div>
+                                <div class="plan-period">per month</div>
+                                <ul class="plan-features">
+                                    <li><i class="bi bi-check"></i> 20 claims/month</li>
+                                    <li><i class="bi bi-check"></i> Priority support</li>
+                                    <li><i class="bi bi-check"></i> 1GB storage</li>
+                                    <li><i class="bi bi-check"></i> Priority processing</li>
+                                    <li><i class="bi bi-check"></i> Basic analytics</li>
+                                </ul>
+                                <button class="btn btn-primary w-100">Current Plan</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="plan-card">
+                                <h5>Enterprise</h5>
+                                <div class="plan-price">$299</div>
+                                <div class="plan-period">per month</div>
+                                <ul class="plan-features">
+                                    <li><i class="bi bi-check"></i> Unlimited claims</li>
+                                    <li><i class="bi bi-check"></i> 24/7 support</li>
+                                    <li><i class="bi bi-check"></i> 5GB storage</li>
+                                    <li><i class="bi bi-check"></i> Immediate processing</li>
+                                    <li><i class="bi bi-check"></i> Advanced analytics</li>
+                                </ul>
+                                <button class="btn btn-outline-primary w-100">Select Enterprise</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>Plan changes will take effect at the end of your current billing period.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maritime Claims Tracking Portal - Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar {
+            background-color: #fff;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .nav-link {
+            color: var(--secondary-color);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+        }
+        
+        .stat-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+        
+        .activity-item {
+            border-left: 3px solid var(--primary-color);
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-submitted {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #d39e00;
+        }
+        
+        .status-review {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: var(--primary-color);
+        }
+        
+        .status-negotiation {
+            background-color: rgba(253, 126, 20, 0.2);
+            color: #fd7e14;
+        }
+        
+        .status-settled {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: var(--success-color);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar p-3" style="width: 250px;">
+            <div class="d-flex align-items-center mb-4">
+                <img src="https://via.placeholder.com/40x40?text=MC" alt="Logo" class="me-2">
+                <span class="fs-5 fw-bold">Maritime Claims</span>
+            </div>
+            
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-earmark-text"></i> My Claims
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="file-claim.html">
+                        <i class="bi bi-plus-circle"></i> File New Claim
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-chat-left-text"></i> Messages
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-graph-up"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-person"></i> Account
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dashboard</h2>
+                <button class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>File New Claim
+                </button>
+            </div>
+            
+            <!-- Quick Stats Widget -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Total Claims</h6>
+                                <h3 class="mb-0">42</h3>
+                            </div>
+                            <div class="stat-icon text-primary">
+                                <i class="bi bi-files"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Under Review</h6>
+                                <h3 class="mb-0">15</h3>
+                            </div>
+                            <div class="stat-icon text-info">
+                                <i class="bi bi-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">In Negotiation</h6>
+                                <h3 class="mb-0">8</h3>
+                            </div>
+                            <div class="stat-icon text-warning">
+                                <i class="bi bi-people"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="stat-card p-3 bg-white">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="text-muted">Settled</h6>
+                                <h3 class="mb-0">19</h3>
+                            </div>
+                            <div class="stat-icon text-success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Recent Activity Feed -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Recent Activity</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>Claim #MC-2023-0452</strong>
+                                    <span class="status-badge status-settled">Settled</span>
+                                </div>
+                                <p class="mb-1">Claim settled. $8,500 paid to your account.</p>
+                                <small class="text-muted">Today, 10:45 AM</small>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>Claim #MC-2023-0487</strong>
+                                    <span class="status-badge status-negotiation">Negotiation</span>
+                                </div>
+                                <p class="mb-1">Counteroffer received from insurer: $12,000 (original claim $15,000)</p>
+                                <small class="text-muted">Yesterday, 3:22 PM</small>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>Claim #MC-2023-0491</strong>
+                                    <span class="status-badge status-review">Under Review</span>
+                                </div>
+                                <p class="mb-1">Survey report uploaded by claims officer.</p>
+                                <small class="text-muted">Yesterday, 11:15 AM</small>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>Claim #MC-2023-0495</strong>
+                                    <span class="status-badge status-submitted">Submitted</span>
+                                </div>
+                                <p class="mb-1">New claim filed for damaged cargo on voyage V-2345.</p>
+                                <small class="text-muted">2 days ago</small>
+                            </div>
+                            
+                            <a href="#" class="btn btn-outline-primary w-100 mt-2">View All Activity</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions and Metrics -->
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-outline-primary w-100 mb-2">
+                                <i class="bi bi-file-earmark-plus me-2"></i> Start New Claim
+                            </button>
+                            <button class="btn btn-outline-secondary w-100 mb-2">
+                                <i class="bi bi-upload me-2"></i> Upload Documents
+                            </button>
+                            <button class="btn btn-outline-success w-100 mb-2">
+                                <i class="bi bi-graph-up me-2"></i> Generate Report
+                            </button>
+                            <button class="btn btn-outline-info w-100">
+                                <i class="bi bi-headset me-2"></i> Contact Support
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Processing Metrics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6>Average Settlement Time</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 65%">18 days</div>
+                                </div>
+                                <small class="text-muted">Industry average: 24 days</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6>Success Rate</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 82%">82%</div>
+                                </div>
+                                <small class="text-muted">Last 30 claims</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <h6>Claims by Type</h6>
+                                <div class="d-flex align-items-center mb-1">
+                                    <div style="width: 10px; height: 10px; background-color: #0d6efd; margin-right: 5px;"></div>
+                                    <small>Damage (62%)</small>
+                                </div>
+                                <div class="d-flex align-items-center mb-1">
+                                    <div style="width: 10px; height: 10px; background-color: #fd7e14; margin-right: 5px;"></div>
+                                    <small>Shortage (23%)</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div style="width: 10px; height: 10px; background-color: #6c757d; margin-right: 5px;"></div>
+                                    <small>Other (15%)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
